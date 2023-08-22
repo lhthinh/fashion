@@ -4,81 +4,37 @@ import { UpdateProductDto } from './dto/update-product.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Product } from './entities/product.entity'
 import { Repository } from 'typeorm'
-import { IngredientProductService } from '../ingredient-product/ingredient-product.service'
 import * as _ from 'lodash'
 @Injectable()
 export class ProductService {
-  constructor(
-    @InjectRepository(Product) private readonly productRepository: Repository<Product>,
-    private readonly ingredientProductService: IngredientProductService,
-  ) {}
-  async create(createProductDto: CreateProductDto) {
-    const { ingredients, productName } = createProductDto
-    const product = await this.productRepository.save({ productName })
-    for await (const ingredient of ingredients) {
-      const { ingredientId, quantity, unit } = ingredient
-      await this.ingredientProductService.create({
-        ingredientId,
-        productId: product.id,
-        quantity,
-        unit,
-      })
-    }
-    return await this.productRepository.findOneBy({ id: product.id })
-  }
-
-  addImage(file: Express.Multer.File, id: number) {
-    return this.productRepository.save({
-      id,
+  constructor(@InjectRepository(Product) private readonly productRepository: Repository<Product>) {}
+  async create(createProductDto: CreateProductDto, file: Express.Multer.File) {
+    return await this.productRepository.save({
+      ...createProductDto,
       image: '/files/product/' + file.filename,
     })
   }
+
   async findAll() {
-    const products = await this.productRepository.find({
-      relations: {
-        ingredientProduct: {
-          ingredient: true,
-        },
-      },
-    })
-    const resProduct = _.map(products, item => {
-      let recipe = ''
-      _.forEach(item.ingredientProduct, (ingredientProduct, index) => {
-        const suffix = !(item.ingredientProduct.length == index + 1) ? ' + ' : ''
-        recipe +=
-          ingredientProduct.quantity +
-          ingredientProduct.unit +
-          ' ' +
-          ingredientProduct.ingredient.ingredientName +
-          suffix
-      })
-      return { id: item.id, productName: item.productName, recipe, image: item.image }
-    })
-    return resProduct
+    return await this.productRepository.find()
   }
 
   async findOne(id: number) {
-    const product = await this.productRepository.findOne({
-      where: { id },
-      relations: {
-        ingredientProduct: {
-          ingredient: true,
-        },
-      },
-    })
-    let recipe = ''
-    _.forEach(product.ingredientProduct, item => {
-      recipe = item.quantity + item.unit
-    })
-    return { productName: product.productName, recipe }
+    return await this.productRepository.findOneBy({ id })
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`
+  async update(id: number, updateProductDto: UpdateProductDto, file: Express.Multer.File) {
+    const product = await this.findOne(id)
+    if (id) {
+      return await this.productRepository.save({
+        ...product,
+        ...updateProductDto,
+        image: '/files/product/' + file.filename,
+      })
+    }
   }
 
   async remove(id: number) {
-    await this.ingredientProductService.removeByProductId(id)
-    return this.productRepository.delete({ id })
+    return this.productRepository.softDelete({ id })
   }
 }

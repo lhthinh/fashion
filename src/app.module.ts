@@ -9,12 +9,10 @@ import { configConfig } from './common/config/config.config'
 import { i18nConfig } from './common/config/i18n.config'
 import { typeOrmAsyncConfig } from './common/config/typeorm.config'
 import { AuthModule } from './modules/auth/auth.module'
-import { IngredientProductModule } from './modules/ingredient-product/ingredient-product.module'
-import { IngredientModule } from './modules/ingredient/ingredient.module'
+import { OrderProductModule } from './modules/order-product/order-product.module'
+import { OrderModule } from './modules/order/order.module'
 import { ProductModule } from './modules/product/product.module'
-import { RatingModule } from './modules/rating/rating.module'
 import { UserModule } from './modules/user/user.module'
-import { OrderModule } from './modules/order/order.module';
 
 @Module({
   imports: [
@@ -26,11 +24,9 @@ import { OrderModule } from './modules/order/order.module';
     }),
     AuthModule,
     UserModule,
-    IngredientModule,
     ProductModule,
-    IngredientProductModule,
-    RatingModule,
     OrderModule,
+    OrderProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],

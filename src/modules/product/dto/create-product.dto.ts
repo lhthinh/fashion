@@ -1,15 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Transform, Type } from 'class-transformer'
-import { IsArray, IsOptional, IsString, ValidateNested } from 'class-validator'
-import { CreateIngredientProductDto } from 'src/modules/ingredient-product/dto/create-ingredient-product.dto'
+import { Type } from 'class-transformer'
+import { IsNumber, IsOptional, IsString } from 'class-validator'
 
 export class CreateProductDto {
-  @ApiProperty({ example: 'cfe muối' })
+  @ApiProperty({ example: '' })
   @IsString()
   productName: string
 
-  @ApiProperty({
-    example: [{ ingredientId: 1, unit: 'ml', quantity: 20 }],
-  })
-  ingredients: CreateIngredientProductDto[]
+  @ApiProperty({ example: '' })
+  @IsOptional()
+  @IsString()
+  description: string
+
+  @ApiProperty({ example: '' })
+  @IsNumber()
+  @Type(() => Number)
+  price: number
+
+  @ApiProperty({ type: 'string', format: 'binary' })
+  file: Express.Multer.File
 }

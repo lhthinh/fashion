@@ -1,4 +1,4 @@
-import { Rating } from 'src/modules/rating/entities/rating.entity'
+import { Order } from 'src/modules/order/entities/order.entity'
 import {
   BaseEntity,
   Column,
@@ -41,6 +41,6 @@ export class User extends BaseEntity {
   @Column({ name: 'updated_by', nullable: true })
   updatedBy: string
 
-  @OneToMany(() => Rating, rating => rating.user)
-  ratings: Rating[]
+  @OneToMany(() => Order, orders => orders.user)
+  orders: Order[]
 }
