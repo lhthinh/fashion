@@ -1,7 +1,9 @@
 FROM node:18-alpine
 WORKDIR /app
+RUN npm install -g pnpm
+COPY package.json pnpm.lock ./
+RUN pnpm install --production
 COPY . .
-RUN yarn install --production
-RUN yarn build
-CMD ["yarn", "start:prod"]
+RUN pnpm build
+CMD ["pnpm", "start:prod"]
 EXPOSE 3000
