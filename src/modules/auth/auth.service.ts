@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { UserService } from '../user/user.service'
+import { JWT_ACCESS_TOKEN_EXPIRES_IN } from './auth.constant'
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,9 @@ export class AuthService {
 
   async login(user: any) {
     // const payload = { username: user.username, sub: user.userId }
-    return user
+    return {
+      accessToken: this.jwtService.sign(user),
+      expiresIn: JWT_ACCESS_TOKEN_EXPIRES_IN,
+    }
   }
 }
