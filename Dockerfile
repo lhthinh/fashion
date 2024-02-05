@@ -1,6 +1,6 @@
 FROM node:18-alpine
 WORKDIR /app
 COPY . .
-RUN pnpm install --production
-CMD ["pnpm", "start:prod"]
+RUN yarn install --production
+CMD ["yarn", "start:prod"]
 EXPOSE 3000
