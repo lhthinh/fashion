@@ -6,4 +6,4 @@ RUN pnpm install
 COPY . .
 RUN pnpm build:production
 CMD ["pnpm", "serve:production"]
-EXPOSE 3000
+EXPOSE 3033
